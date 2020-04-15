@@ -1,7 +1,6 @@
 import pandas as pd
 import sacsma_utilities
 import camels_utilities
-import pet
 import matplotlib.pyplot as plt
 
 # Location of camels data
@@ -22,12 +21,8 @@ attributes = camels_utilities.load_basin_attributes(camels_dir, gauge_id)
 benchmark = camels_utilities.load_discharge(camels_dir, forcing_type, gauge_id)
 dates = forcings['Date']
 
-# Calculate potential evaporation
-forcings['PET(mm/day)'] = pet.get_priestley_taylor_pet(forcings['Tmin(C)'], forcings['Tmax(C)'], forcings['SRAD(W/m2)'], 
-                                                       attributes['gauge_lat'], attributes['elev_mean'], dates.dt.dayofyear)
-
 # Run SAC-SMA
-outputs, states = sacsma_utilities.run_sacsma(dates, forcings, parameters)
+outputs, states = sacsma_utilities.run_sacsma(dates, forcings, parameters, attributes)
 
 # Plot results
 plt.plot(outputs['surf'] + outputs['grnd'], label='Our SAC-SMA')
