@@ -12,13 +12,13 @@ def load_sacsma_parameters(data_dir: str, forcing_type: str, gauge_id: str):
   parameters = {}
   with open(filename) as f:
     for line in f:
-      (key, val) = line.split()
-      parameters[key] = val
+      key, val = line.split()
+      parameters[key] = float(val)
 
   # Convert to dataframe
-  # parameters_df = pd.Series(parameters).to_frame
+  parameters_series = pd.Series(parameters)#.to_frame
 
-  return parameters
+  return parameters_series
 
 
 def load_basin_attributes(data_dir: str, gauge_id: str):
