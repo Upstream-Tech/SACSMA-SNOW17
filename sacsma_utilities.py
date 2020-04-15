@@ -2,18 +2,24 @@ import sacsma
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
+import pet
+from collections import OrderedDict
 
 
-def run_sacsma(dates, forcings, parameters):
+def run_sacsma(dates, forcings, parameters, attributes):
 
   # Number of time steps
   num_time_steps = forcings.shape[0]
 
   # Timestep (I believe this is in units 'days', but I am not 100% sure)
+  assert type(dates) == pd.Series
+  assert type(dates[0]) == pd.Timestamp
+  assert all(dates.diff().values[1:] == dates.diff().values[1])
   dt = (dates[1]-dates[0]).total_seconds()/(60*60*24)
  
-  # Initial states
-  # states = {'uztwc': 100., 'uzfwc': 100., 'lztwc': 100., 'lzfsc': 10., 'lzfpc': 10., 'adimc': 100.}
+  # Initial states must be numpy scalars for the fortran intent(inout) to work. 
+  # Also must have trailing decimals, or fortran will treat as integers even if typed as real in the interface.
+  state_keys = ['uztwc', 'uzfwc', 'lztwc', 'lzfsc', 'lzfpc', 'adimc']
   uztwc = np.array(100.)
   uzfwc = np.array(100.)
   lztwc = np.array(100.)
@@ -21,34 +27,35 @@ def run_sacsma(dates, forcings, parameters):
   lzfpc = np.array(100.)
   adimc = np.array(100.)
 
-  # Init storage
-  states = pd.DataFrame(index=dates, columns=['uztwc', 'uzfwc', 'lztwc', 'lzfsc', 'lzfpc', 'adimc'])
-  outputs = pd.DataFrame(index=dates, columns=['surf', 'grnd', 'tet'])
+  # Calculate potential evaporation
+  if not('PET(mm/day)' in forcings):
+    forcings['PET(mm/day)'] = pet.get_priestley_taylor_pet(forcings['Tmin(C)'], forcings['Tmax(C)'], forcings['SRAD(W/m2)'], 
+                                                           attributes['gauge_lat'], attributes['elev_mean'], dates.dt.dayofyear)    
+
+  # # Init storage
+  flux_keys = ['surf', 'grnd', 'tet']
+  states = np.full([num_time_steps, len(state_keys)], np.nan)
+  fluxes = np.full([num_time_steps, len(flux_keys)], np.nan)
+
+  # Make parameters as numpy array
+  parameters_np = parameters[['uztwm', 'uzfwm', 'uzk', 'pctim', 'adimp', 'riva', 'zperc', 'rexp', 'lztwm', 'lzfsm', 'lzfpm', 'lzsk', 'lzpk', 'pfree', 'side']].values.copy()
 
   # Time loop
   for t in tqdm(range(num_time_steps)):
 
-    # Run
-    surf, grnd, tet = sacsma.fland1(forcings['PRCP(mm/day)'][t], forcings['PET(mm/day)'][t], dt, uztwc, uzfwc, lztwc, lzfsc, lzfpc,
-                                    adimc, parameters['uztwm'], parameters['uzfwm'], parameters['uzk'],
-                                    parameters['pctim'], parameters['adimp'], parameters['riva'], parameters['zperc'],
-                                    parameters['rexp'], parameters['lztwm'], parameters['lzfsm'], parameters['lzfpm'],
-                                    parameters['lzsk'], parameters['lzpk'], parameters['pfree'], parameters['side'], 0)
+    # Run the model at one timestep
+    current_flux_np = sacsma.fland1(forcings['PRCP(mm/day)'][t], forcings['PET(mm/day)'][t], dt, uztwc, uzfwc, lztwc,
+                                    lzfsc, lzfpc, adimc, *parameters_np, 0)
 
-    # Save states
-    states.loc[forcings['Date'][t], 'uztwc'] = uztwc
-    states.loc[forcings['Date'][t], 'uzfwc'] = uzfwc
-    states.loc[forcings['Date'][t], 'lztwc'] = lztwc
-    states.loc[forcings['Date'][t], 'lzfsc'] = lzfsc
-    states.loc[forcings['Date'][t], 'lzfpc'] = lzfpc
-    states.loc[forcings['Date'][t], 'adimc'] = adimc
+    # Save states & outputs
+    states[t] = uztwc, uzfwc, lztwc, lzfsc, lzfpc, adimc
+    fluxes[t] = current_flux_np
 
-    # Save outputs
-    outputs.loc[forcings['Date'][t], 'surf'] = surf
-    outputs.loc[forcings['Date'][t], 'grnd'] = grnd
-    outputs.loc[forcings['Date'][t], 'tet'] = tet
+  # Turn into dataframes
+  states_df = pd.DataFrame(states, index=dates)
+  fluxes_df = pd.DataFrame(fluxes, index=dates)
 
-  return outputs, states
+  return fluxes_df, states_df
 
 
 
