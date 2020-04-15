@@ -2,18 +2,22 @@ import glob
 from pathlib import Path
 import pandas as pd
 
+# Hard-code paths
+DATA_DIR = '/Users/grey/workspace/camels_data/'
+FORCING_TYPE = 'nldas'
 
-def load_sacsma_parameters(data_dir: str, forcing_type: str, gauge_id: str):
+
+def load_sacsma_parameters(gauge_id: str):
 
   # Construct file name from pieces
-  filename = glob.glob(f'{data_dir}/model_output/{forcing_type}/**/{gauge_id}_*_model_parameters.txt')[0]
+  filename = glob.glob(f'{DATA_DIR}/model_output/{FORCING_TYPE}/**/{gauge_id}_*_model_parameters.txt')[0]
 
   # Load a dictionary of parameter values
   parameters = {}
   with open(filename) as f:
     for line in f:
       key, val = line.split()
-      parameters[key] = float(val)
+      parameters[key] = val
 
   # Convert to dataframe
   parameters_series = pd.Series(parameters)#.to_frame
@@ -21,10 +25,10 @@ def load_sacsma_parameters(data_dir: str, forcing_type: str, gauge_id: str):
   return parameters_series
 
 
-def load_basin_attributes(data_dir: str, gauge_id: str):
+def load_basin_attributes(gauge_id: str):
 
   # Add the attributes path extention
-  attributes_dir = Path(data_dir) / 'camels_attributes_v2.0' 
+  attributes_dir = Path(DATA_DIR) / 'camels_attributes_v2.0'
 
   # Check for existence
   if not attributes_dir.exists():
@@ -52,10 +56,11 @@ def load_basin_attributes(data_dir: str, gauge_id: str):
   return attributes
 
 
-def load_forcings(data_dir: str, forcing_type: str, gauge_id: str):
-    
+def load_forcings(gauge_id: str):
+
   # Grab the correct forcing file
-  forcing_files = glob.glob(f'{data_dir}/basin_dataset_public_v1p2/basin_mean_forcing/{forcing_type}/**/{gauge_id}_*_forcing_leap.txt')
+  forcing_files = glob.glob(
+      f'{DATA_DIR}/basin_dataset_public_v1p2/basin_mean_forcing/{FORCING_TYPE}/**/{gauge_id}_*_forcing_leap.txt')
   assert len(forcing_files) == 1
   forcing_file = forcing_files[0]
 
@@ -63,22 +68,23 @@ def load_forcings(data_dir: str, forcing_type: str, gauge_id: str):
   forcings = pd.read_csv(forcing_file, sep='\s+', header=3)
 
   # Datetime index
-  forcings['Date'] = pd.to_datetime(forcings['Year'] * 10000 + forcings['Mnth'] * 100 + forcings['Day'], format='%Y%m%d')
-#   forcings = forcings.set_index('Date')
+  forcings['Date'] = pd.to_datetime(
+      forcings['Year'] * 10000 + forcings['Mnth'] * 100 + forcings['Day'], format='%Y%m%d')
+  forcings = forcings.set_index('Date')
 
   return forcings
 
 
-def load_discharge(data_dir: str, forcing_type: str, gauge_id: str):
-    
+def load_discharge(gauge_id: str):
+
   # Grab the correct forcing file
-  filename = glob.glob(f'{data_dir}/model_output/{forcing_type}/**/{gauge_id}_*_model_output.txt')[0]
+  filename = glob.glob(f'{DATA_DIR}/model_output/{FORCING_TYPE}/**/{gauge_id}_*_model_output.txt')[0]
 
   # Grab the data
   output = pd.read_csv(filename, sep='\s+')
 
   # Datetime index
   output['Date'] = pd.to_datetime(output['YR'] * 10000 + output['MNTH'] * 100 + output['DY'], format='%Y%m%d')
-#   output = output.set_index('Date')
+  output = output.set_index('Date')
 
   return output
