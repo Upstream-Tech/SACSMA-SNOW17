@@ -11,14 +11,8 @@ def run_sacsma(inputs: pd.DataFrame, gauge_id: str):
   # Load attributes
   attributes = camels_utilities.load_basin_attributes(gauge_id)
 
-  # Timestep
-  # I believe SAC-SMA wants this in units 'days', but am not 100% sure
-  # dates = inputs.index.to_series()
-  # assert type(dates) == pd.Series
-  # assert type(dates[0]) == pd.Timestamp
-  # Is it a problem that the date indexes aren't regular?
-  #assert all(dates.diff().values[1:] == dates.diff().values[1])
-  dt = 1  #(dates[1] - dates[0]).total_seconds() / (60 * 60 * 24)
+  # Timestep in [seconds]
+  dt = int((inputs.index[1] - inputs.index[0]).total_seconds())
 
   # Keys for parameters, states, fluxes
   parameter_keys = [
@@ -30,12 +24,12 @@ def run_sacsma(inputs: pd.DataFrame, gauge_id: str):
 
   # Initial states must be numpy scalars for the fortran intent(inout) to work.
   # Also must have trailing decimals, or fortran will treat as integers even if typed as real in the pyf interface.
-  uztwc = np.array(100.)
-  uzfwc = np.array(100.)
-  lztwc = np.array(100.)
-  lzfsc = np.array(100.)
-  lzfpc = np.array(100.)
-  adimc = np.array(100.)
+  uztwc = np.array(10.)
+  uzfwc = np.array(10.)
+  lztwc = np.array(10.)
+  lzfsc = np.array(10.)
+  lzfpc = np.array(10.)
+  adimc = np.array(10.)
 
   # Extract parameters as numpy array
   parameters_np = parameters[parameter_keys].values.copy()

@@ -15,18 +15,11 @@ program lump_driver
 
   character(len=2000)		:: arg  !command line arg for namelist file
   character(len=2000)		:: namelist_name  !command line arg for namelist file
-
   integer(I4B) :: i,ntau,k,m,j,cnt
-
   integer(I4B) :: end_pt		!end point for old uh state addition
-
   integer(I4B) :: error
-
   integer(I4B) :: sim_length	!length of simulation
-
-
   real(sp) :: dtuh	!for unit hydrograph
-
 
 !single precision sac-sma state variables
   real(sp)		:: uztwc_sp
