@@ -1,7 +1,7 @@
 &INIT_CONTROL
 init_smois    = 550.0, 500.0, 580.0, 500.0, 525.0, 500.0  !initial soil moisture state for sac-sma
-forcing_name  = "/d2/anewman/daymet_forcing/lump/10/006352000_lump_cida_forcing_leap.txt"		!GDP areal average forcing file name for gage being processed
-stream_name  = "/d2/anewman/usgs_streamflow/10/006352000_streamflow_1980_leap.txt"			!USGS streamflow file name for gage being processed
+forcing_name  = "/Users/grey/workspace/camels_data/basin_dataset_public_v1p2/basin_mean_forcing/daymet/10006352000_lump_daymet_forcing_leap.txt"		!GDP areal average forcing file name for gage being processed
+stream_name  = "/Users/grey/workspace/camels_data/basin_dataset_public_v1p2/usgs_streamflow/10006352000_streamflow_1980_leap.txt"			!USGS streamflow file name for gage being processed
 model_out = "/home/anewman/bor_basin_calib/bin/006352000_model_output.txt"		!Model output file name for gage being processed.  Only used when opt = 0.
 opt_name = "/home/anewman/bor_basin_calib/bin/region_10_opt.txt"  								!File name for SCE optimal paramter sets.  Only used when opt = 0.
 gage_id = 006352000    !9 digit gage ID being run

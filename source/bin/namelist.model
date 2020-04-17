@@ -1,11 +1,11 @@
 &INIT_CONTROL
-forcing_name  = "/d2/anewman/daymet_forcing/lump/14/09081600_lump_cida_forcing_leap.txt"
-stream_name  = "/d2/anewman/usgs_streamflow/14/09081600_streamflow_1980_leap.txt"
+forcing_name = "/Users/grey/workspace/camels_data/basin_dataset_public_v1p2/basin_mean_forcing/daymet/10/06352000_lump_cida_forcing_leap.txt"		!GDP areal average forcing file name for gage being processed
+stream_name = "/Users/grey/workspace/camels_data/basin_dataset_public_v1p2/usgs_streamflow/10/06352000_streamflow_qc.txt"			!USGS streamflow file name for gage being processed
 model_out = "./test_model_output_1.txtb"
 sac_param_file = "./test_sac_params.parm"
 snow17_param_file = "./test_snow17_params.parm"
 uhp_param_file = "./test_uhp_params.parm"
-gage_id = 09081600			!usgs gage id
+gage_id = 06352000			!usgs gage id
 dt      = 86400				!model time step in seconds (86400 = 1 day)
 
 start_year    = 1980

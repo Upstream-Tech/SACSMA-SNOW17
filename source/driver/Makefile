@@ -10,7 +10,7 @@
 #========================================================================
 
 # Define core directory below which everything resides
-F_MASTER_DIR = /home/gsnearing/projects/sacsma_ml_calibration/sacsma/SACSMA-Snow17/
+F_MASTER_DIR = /Users/grey/workspace/SACSMA-SNOW17/source
 
 # Location of the compiled modules
 MOD_PATH = $(F_MASTER_DIR)/driver
