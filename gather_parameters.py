@@ -8,9 +8,9 @@ import pandas as pd
 camels_dir = '/Users/grey/workspace/camels_data/'
 
 # Which forcings
-# forcing_type = 'nldas'
-forcings = 'maurer'
-#forcings = 'daymet'
+forcing_type = 'nldas'
+# forcing_type = 'maurer'
+# forcing_type = 'daymet'
 
 # Load list of gauge IDs
 with open('camels_basin_id_list.txt', 'r') as f:
@@ -18,16 +18,21 @@ with open('camels_basin_id_list.txt', 'r') as f:
 basins = [basin.strip() for basin in basins]
 
 # Grab parameter names
-test_parameters = camels_utilities.load_sacsma_parameters(camels_dir, forcing_type, basins[0])
+test_parameters = camels_utilities.load_sacsma_parameters(basins[0])
 param_names = test_parameters.keys()
 
 # Init storage
-parameters = pd.DataFrame(index=basins, columns=param_names)
+parameters = {}
 
 # Loop through all basins
 for basin in tqdm(basins):
-     basin_params = camels_utilities.load_sacsma_parameters(camels_dir, forcing_type, basin)
-     parameters.loc[basin] = basin_params
+    for param in range(10):
+
+     # Load parameters
+     basin_params = camels_utilities.load_all_sacsma_parameters(basin, forcing_type)
+     
+     # Store in dictionary
+     parameters[basin] = basin_params
 
 # Pickle
 fname = f'results/all_camels_parameters_{forcing_type}.pkl'
