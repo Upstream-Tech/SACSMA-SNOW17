@@ -7,6 +7,29 @@ DATA_DIR = '/Users/grey/workspace/camels_data/'
 FORCING_TYPE = 'nldas'
 
 
+def load_all_sacsma_parameters(gauge_id: str, forcing_type: str):
+
+  # Construct file name from pieces
+  filenames = glob.glob(f'{DATA_DIR}/model_output/{forcing_type}/**/{gauge_id}_*_model_parameters.txt')
+
+  # loop through all files
+  for i, filename in enumerate(filenames):
+
+    # Load a dictionary of parameter values
+    parameters = {}
+    with open(filename) as f:
+      for line in f:
+        key, val = line.split()
+        parameters[key] = val
+
+    # Convert to pandas series
+    if not('parameters_df' in locals()):
+      parameters_df = pd.DataFrame(index = parameters.keys())
+    parameters_df[str(i)] = pd.Series(parameters)#.to_frame
+
+  return parameters_df
+
+
 def load_sacsma_parameters(gauge_id: str):
 
   # Construct file name from pieces
