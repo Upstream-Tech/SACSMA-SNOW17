@@ -33,11 +33,9 @@ for basin in tqdm(basins):
     # Store in dictionary
     parameters[basin] = basin_params
 
-    # import pdb; pdb.set_trace()
-
 # Pickle
 fname = f'results/all_camels_parameters_{forcing_type}.pkl'
 with open(fname, 'wb') as f:
-    pkl.dump(f, parameters)
+    pkl.dump(parameters,f)
 
 
