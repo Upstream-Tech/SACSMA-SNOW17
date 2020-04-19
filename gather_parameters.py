@@ -26,13 +26,14 @@ parameters = {}
 
 # Loop through all basins
 for basin in tqdm(basins):
-    for param in range(10):
 
-     # Load parameters
-     basin_params = camels_utilities.load_all_sacsma_parameters(basin, forcing_type)
-     
-     # Store in dictionary
-     parameters[basin] = basin_params
+    # Load parameters
+    basin_params = camels_utilities.load_all_sacsma_parameters(basin, forcing_type)
+    
+    # Store in dictionary
+    parameters[basin] = basin_params
+
+    # import pdb; pdb.set_trace()
 
 # Pickle
 fname = f'results/all_camels_parameters_{forcing_type}.pkl'
