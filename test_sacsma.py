@@ -9,13 +9,12 @@ with open('camels_basin_id_list.txt', 'r') as f:
 basins = [basin.strip() for basin in basins]
 
 # Gauge ID to test
-basin = '02465493' 
+#basin = '02465493' 
+basin = basins[200]
 
 # Load all necessary data
 forcings = camels_utilities.load_forcings(basin)
 benchmark = camels_utilities.load_discharge(basin)
-
-print(forcings.columns)
 
 # Run SAC-SMA
 fluxes, states = sacsma_utilities.run_sacsma(forcings, basin)
