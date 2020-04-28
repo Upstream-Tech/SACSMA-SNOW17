@@ -3,7 +3,7 @@ from pathlib import Path
 import pandas as pd
 
 # Hard-code paths
-DATA_DIR = '/Users/grey/workspace/camels_data/'
+DATA_DIR = '/home/gsnearing/projects/camels_data'
 FORCING_TYPE = 'nldas'
 
 
@@ -33,7 +33,8 @@ def load_all_sacsma_parameters(gauge_id: str, forcing_type: str):
 def load_sacsma_parameters(gauge_id: str):
 
   # Construct file name from pieces
-  filename = glob.glob(f'{DATA_DIR}/model_output/{FORCING_TYPE}/**/{gauge_id}_*_model_parameters.txt')[0]
+  filename = glob.glob(f'{DATA_DIR}/model_output/{FORCING_TYPE}/**/{gauge_id}_*_model_parameters.txt')
+  filename = filename[0]
 
   # Load a dictionary of parameter values
   parameters = {}
@@ -101,7 +102,8 @@ def load_forcings(gauge_id: str):
 def load_discharge(gauge_id: str):
 
   # Grab the correct forcing file
-  filename = glob.glob(f'{DATA_DIR}/model_output/{FORCING_TYPE}/**/{gauge_id}_*_model_output.txt')[0]
+  filename = glob.glob(f'{DATA_DIR}/model_output/{FORCING_TYPE}/**/{gauge_id}_*_model_output.txt')
+  filename = filename[0]
 
   # Grab the data
   output = pd.read_csv(filename, sep='\s+')
@@ -111,3 +113,21 @@ def load_discharge(gauge_id: str):
   output = output.set_index('Date')
 
   return output
+
+
+def load_usgs(gauge_id: str):
+
+  # Grab the correct forcing file
+  filename = glob.glob(f'{DATA_DIR}/basin_dataset_public_v1p2/usgs_streamflow/**/{gauge_id}_streamflow_qc.txt')[0]
+
+  # Grab the data
+  col_names = ['basin', 'Year', 'Mnth', 'Day', 'QObs', 'flag']
+  obs = pd.read_csv(filename, sep='\s+', header=None, names=col_names)
+
+  # Datetime index
+  obs['Date'] = pd.to_datetime(obs.Year.map(str) + "/" + obs.Mnth.map(str) + "/" + obs.Day.map(str))
+  obs = obs.set_index('Date')
+
+  return obs
+
+
