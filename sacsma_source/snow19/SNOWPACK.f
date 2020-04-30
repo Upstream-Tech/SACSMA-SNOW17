@@ -1,0 +1,79 @@
+C ****************************************************************
+C **  SUBROUTINE TO CALCULATE SNOW COMPACTION AND METAMORPHISM ***
+C **  EQUATIONS OF INCREASING OF SNOW DENSITY WERE OBTAINED AS ***
+C **  AN APPROXIMATE SOLUTIONS OF E. ANDERSON DIFFERENTIAL     ***
+C **  EQUATIONS (3.29) AND (3.30), (3.31), NOAA TECHNICAL      *** 
+C **  REPORT NWS 19, by   VICTOR KOREN   03/25/95              ***
+C ****************************************************************
+
+      SUBROUTINE SNOWPACK ( W,DTS,HC,DS,SLIQ,DFALL,SRFRZ,TSNOW)
+
+C **************************************************************
+C  W      IS A WATER EQUIVALENT OF SNOW, IN MM               ***
+C  DTS    IS A TIME STEP, IN HOURS                           ***
+C  HC     IS A SNOW DEPTH, IN CM                              ***
+C  DS     IS A SNOW DENSITY, IN G/CM3                        ***
+C  SLIQ   IS A LIQUID WATER CONTENTS, MM                     ***
+C  TSNOW  IS AN AVERAGE SNOW TEMPERATURE, CELSIUS            ***
+C      SUBROUTINE WILL RETURN NEW VALUES OF H AND DS         ***
+C **************************************************************
+
+      REAL*8 B
+
+C  CONSTANTS OF SNOW COMPACTION/METAMORPHISM MODELS. FROM ANDERSON
+C  TECHNICAL REPORT 19:
+C    C1 IN 1/(CM HR), C2 IN CM3/G, C3 IN 1/HR, C4 IN 1/DEGREE C,
+C    C5 DIMENSIONLESS, RDS IN G/CM3, CX IN CM3/G
+C    ONLY PARAMETER C5 WAS CHANGED FROM 0.15 TO 0.20 BASED ON
+C    RESULTS OF SIMULATIONS USING NOAA-ARS COOPERATIVE SNOW 
+C    RESEARCH PROJECT DATA 
+      PARAMETER (C1=0.01, C2=21.0)
+      PARAMETER (C3=0.01, C4=0.04, RDS=0.20, C5=2.,CX=46.)
+
+C **  CONVERSION INTO SIMULATION UNITS   ************************* 
+      WX=W*0.1
+
+C **  CALCULATING OF SNOW DEPTH AND DENSITY AS A RESULT OF COMPACTION
+C **  C1 IS THE FRACTIONAL INCREASE IN DENSITY (1/(CM*HR)) 
+C **  C2 IS A CONSTANT (CM3/G) Kojima estimated as 21 cms/g
+C   
+      DSC=1.
+      IF(WX.GT.1E-2) THEN
+        B=DTS*C1*EXP(0.08*TSNOW-C2*DS)
+C   AJN - updated code to promote B*WX to double precision
+        DSC=(DEXP(dble(B*WX))-1.)/dble((B*WX))
+      ENDIF
+
+C **  CALCULATE THE DENSITY CHANGE AS A RESULT OF SNOW METAMORPHISM
+C     C3 IS THE FRACTIONAL SETTLING RATE AT 0 DEGREE FOR DENSITIES 
+C        LESS THAN THRESHOLD DENSITY, RDS
+C     C4 IS A CONSTANT 
+C     C5 IS AN EMPIRICAL ADJUSTMENT FACTOR THAT ACCOUNTS FOR MELT
+C        METAMORPHISM
+C 
+      A=C3
+      IF(SLIQ .GT. 0.) A=A*C5
+
+      C=C4*TSNOW
+      IF(DS .GT. RDS) C=C-CX*(DS-RDS)
+      DSM=EXP(A*DTS*EXP(C))
+
+C **  NEW SNOW DENSITY AS A RESULT OF COMPACTION-METAMORPHISM 
+      DSX=DS*DSC*DSM
+      IF(DSX .GT. 0.45) DSX=0.45
+      IF(DSX .LT. 0.05) DSX=DS
+      DS=DSX
+      DWX=WX-0.1*(DFALL+SRFRZ)
+      IF(DWX .GT. 0.) THEN
+       HC=DWX/DS
+      ELSE 
+       IF(WX .GT. 0.) THEN
+        HC=WX/DSX
+       ELSE
+        HC=0.0
+       ENDIF  
+      ENDIF
+
+      RETURN
+      END
+

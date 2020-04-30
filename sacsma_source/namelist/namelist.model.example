@@ -1,0 +1,42 @@
+&INIT_CONTROL
+forcing_name  = "/d2/anewman/daymet_forcing/lump/14/09081600_lump_cida_forcing_leap.txt"	!name of input forcing data file
+stream_name  = "/d2/anewman/usgs_streamflow/14/09081600_streamflow_1980_leap.txt"		!name of observed streamflow file.  this is still necessary for the code to run, will change in future
+model_out = "./test_model_output_1.txtb"							!name of output file
+sac_param_file = "./test_sac_params.parm"							!name of file containing SAC model parameters
+snow17_param_file = "./test_snow17_params.parm"							!name of file containing Snow-17 model parameters
+uhp_param_file = "./test_uhp_params.parm"							!name of fiel containing unit hydrograph routing parameters and P-T coefficient
+gage_id = 09081600			!usgs gage id
+dt      = 86400				!model time step in seconds (86400 = 1 day) 
+
+start_year    = 1980
+start_month   = 10		!starting month for calibration in observed streamflow data
+start_day     = 1		!starting day for calibration in observed streamflow data  (start_month, start_day used to find first date of occurance)
+
+end_year    = 2005
+end_month   = 10		!starting month for calibration in observed streamflow data
+end_day     = 30		!starting day for calibration in observed streamflow data  (start_month, start_day used to find first date of occurance)
+
+in_swe     = 0.0		!initial swe in mm if not performing a restart run
+in_uztwc   = 200.		!initial uztwc in mm if not performing a restart run
+in_uzfwc   = 200.		!initial uzfwc in mm if not performing a restart run
+in_lztwc   = 200.		!initial lztwc in mm if not performing a restart run
+in_lzfsc   = 200.		!initial lzfsc in mm if not performing a restart run
+in_lzfpc   = 200.		!initial lzfpc in mm if not performing a restart run
+in_adimc   = 200.		!initial adimc in mm if not performing a restart run
+
+!restart flags
+write_restart = 1		!write restart files.  necessary to have to perform a restart run.
+restart_run = 0			!is this run a restart run? no=0 yes=1
+
+!only needed if write_restart = 1
+snow17_state_out_file  = "./restart_snow17.txtb"		!name of snow17 output state file
+sac_state_out_file = "./restart_sac.txtb"		!name of sac-sma output state file
+uh_state_out_file = "./restart_uh.txtb"			!name of unit hydrograph output state file
+
+!only needed if restart_run = 1
+sac_state_in_file = "./restart_sac.txt"			!name of snow17 input state file
+snow17_state_in_file = "./restart_snow17.txt"		!name of sac-sma input state file
+uh_state_in_file = "./restart_uh.txt"			!name of unit hydrograph input state file
+
+/
+
