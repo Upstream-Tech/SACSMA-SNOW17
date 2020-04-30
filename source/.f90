@@ -1,4 +1,4 @@
- subroutine timestep_driver(dt, year, month, day,                               & ! timestep
+ subroutine sacsma_timestep(dt, year, month, day,                               & ! timestep
     elev, lat                                                                   & ! characteristics                      
     PRECIP, TMAX, TMIN, VPD, SRAD, PA,                                          & ! forcings
     SFC, MFMAX, MFMIN, UADJ, SI, NMF, TIPM, MBASE, PXTEMP, PLWHC, DAYGM, ADC,   & ! snow17 parameters

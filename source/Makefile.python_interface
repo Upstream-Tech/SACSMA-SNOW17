@@ -42,10 +42,7 @@ calib_sac_77= \
 		sac1.f \
 		ex_sac1.f \
 		duamel.f 
-sacsma = $(patsubst %, $(sac_dir)/%, $(calib_sac_77))
-
-SNO = $(snow19)
-SAC = $(sacsma)
+sac_77 = $(patsubst %, $(sac_dir)/%, $(calib_sac_77))
 
 #========================================================================
 # PART 2: Compiler and flags
@@ -67,6 +64,6 @@ FLAGS77 = -O3 -fdefault-real-8 -fno-align-commons
 all: compile
 
 compile:
-	$(FC77) $(FLAGS77) -c $(SAC) 
-	$(FC) $(FLAGS90) -c $(SNO) 
+	$(FC77) $(FLAGS77) -c $(sac_77) 
+	$(FC) $(FLAGS90) -c $(snow_19) 
 

@@ -1,0 +1,20 @@
+!    -*- f90 -*-
+! Note: the context of this file is case sensitive.
+
+python module primes ! in 
+    interface  ! in :primes
+        subroutine sieve(is_prime,n_max) ! in :primes:primes.f95
+            logical dimension(n_max),intent(out),depend(n_max) :: is_prime
+            integer intent(in) :: n_max
+        end subroutine sieve
+        subroutine logical_to_integer(prime_numbers,is_prime,num_primes,n) ! in :primes:primes.f95
+            integer dimension(num_primes),intent(out),depend(num_primes) :: prime_numbers
+            logical dimension(n),intent(in) :: is_prime
+            integer intent(in) :: num_primes
+            integer, optional,intent(in),check(len(is_prime)>=n),depend(is_prime) :: n=len(is_prime)
+        end subroutine logical_to_integer
+    end interface 
+end python module primes
+
+! This file was auto-generated with f2py (version:2).
+! See http://cens.ioc.ee/projects/f2py2e/
