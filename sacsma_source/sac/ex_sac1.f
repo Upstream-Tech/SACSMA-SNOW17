@@ -14,11 +14,30 @@ C     RCS Id string, for version control
       CHARACTER*60 RCSID
 C      DATA RCSID/"$Id: ex_sac1.f,v 1.1 2006/09/01 21:59:43 vicadmin Exp $"/
 
+      ! FORCINGS
+      INTEGER, INTENT(IN)  :: NSOLD ! not used
+      REAL, INTENT(IN)  ::    DTM ! timestep in seconds
+      REAL, INTENT(IN)  ::    PCP ! precip in [units]
+      REAL, INTENT(IN)  ::    TMP ! air temp in C
+      REAL, INTENT(IN)  ::    ETP ! potential evapotranspiration in [units]
+
+      ! PARAMETERS
+      REAL, INTENT(IN)  ::  UZTWM, UZFWM, UZK, PCTIM, ADIMP, RIVA, ZPERC
+      REAL, INTENT(IN)  ::  REXP, LZTWM, LZFSM, LZFPM, LZSK, LZPK, PFREE
+      REAL, INTENT(IN)  ::  SIDE, RSERV
+
+      ! STATES
+      REAL, INTENT(INOUT)  ::  UZTWC, UZFWC, LZTWC, LZFSC, LZFPC, ADIMC
+
+      ! OUTPUTS
+      REAL, INTENT(OUT)  ::  QS
+      REAL, INTENT(OUT)  ::  QG
+      REAL, INTENT(OUT)  ::  Q
+      REAL, INTENT(OUT)  ::  ETA
+
 
 C     ...THIS SUBROUTINE IS THE EXECUTION ROUTINE FOR SMFLX MODEL...
 C
-
-      INTEGER NSOLD
       REAL    DTM
       REAL    PCP
       REAL    TMP
