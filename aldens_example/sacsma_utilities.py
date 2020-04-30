@@ -1,15 +1,18 @@
 import pandas as pd
 import numpy as np
-import potential_evap, sacsma, camels_utilities
+import camels.potential_evap as potential_evap
+import camels.camels_utilities as camels
+import aldens_example.sacsma as sacsma
+import sacsma_source.snow19.exsnow19 as snow17
 from tqdm import tqdm
 
 def run_sacsma(inputs: pd.DataFrame, gauge_id: str):
 
   # Load parameters
-  parameters = camels_utilities.load_sacsma_parameters(gauge_id)
+  parameters = camels.load_sacsma_parameters(gauge_id)
 
   # Load attributes
-  attributes = camels_utilities.load_basin_attributes(gauge_id)
+  attributes = camels.load_basin_attributes(gauge_id)
 
   # Timestep in [seconds]
   dt = int((inputs.index[1] - inputs.index[0]).total_seconds())
@@ -52,6 +55,8 @@ def run_sacsma(inputs: pd.DataFrame, gauge_id: str):
     # Run the model at one timestep
     surf, grnd, tet = sacsma.fland1(precipitation[t], pet[t], dt, uztwc, uzfwc, lztwc, lzfsc, lzfpc, adimc,
                                     *parameters_np, 0)
+
+                    = snow17.exsnow19()
 
     # Save states & outputs in time arrays
     states[t] = uztwc, uzfwc, lztwc, lzfsc, lzfpc, adimc
