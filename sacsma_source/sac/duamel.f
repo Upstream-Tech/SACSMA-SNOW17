@@ -3,22 +3,22 @@ C===========================================================
 C
 C     THIS SUBROUTINE PERFORM UNIT HYDROGRAPH ROUTING
 C
-      SUBROUTINE DUAMEL(Q, U1, UN1, UT, DT, N, M, QB, K, NTAU)
+      SUBROUTINE DUAMEL(Q,UN1,UT,DT,N,MM,K,NTAU,QB)
       IMPLICIT REAL (A-H,O-Z)
-      INTEGER :: NUI = 1
-      INTEGER, INTENT(IN) :: K, NTAU, N, UN1
-      INTEGER, INTENT(INOUT) :: M
-      REAL, INTENT(IN) :: UT, DT 
-      INTEGER :: A, B
-      REAL, INTENT(INOUT) :: Q(N), QB(N), U1(1000)
-C
-!      PRINT *,'DUAMEL'
-!      PRINT *, UN1,UT,DT,Q(1),NU1,N,M,K,NTAU
-!      PRINT *,'DUAMEL?'
+      INTEGER A,B,M
+      
+      REAL, DIMENSION(N-MM), INTENT(IN) :: Q
+      REAL, INTENT(IN) :: UN1, UT
+      INTEGER, INTENT(IN) :: DT, N, MM, K, NTAU
+      REAL, DIMENSION(N), INTENT(OUT) :: QB
 
+      REAL U1(MM)
+
+!      write(*,*) UN1,UT,DT,N,MM,K,NTAU
+
+      M = MM
       IF(UN1) 8,9,9
     8 U1(1)=1.
-      NU1 = 1
       M = 1
       GOTO 6
     9 IF (K .EQ. 0) GOTO 6
@@ -76,7 +76,6 @@ C
 C=================================================================
 C
       FUNCTION GF(Y)
-      REAL, INTENT(IN) :: Y
       H=1
       X=Y
  38   IF(X.LE.0.)GO TO 39

@@ -38,7 +38,7 @@ C      print *,'rrrr',twi,ai,r,n,fn
       SB=TWE+SNOF
       SBWS=TWE
       SBAESC=AESC
-      GO TO 120
+     GO TO 120
   105 SB=TWE
       SBWS=TWE
   115 AESC=1.0

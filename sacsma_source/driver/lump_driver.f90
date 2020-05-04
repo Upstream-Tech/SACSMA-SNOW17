@@ -107,6 +107,10 @@ program lump_driver
   call read_snow17_params(snow17_param_file)
   call read_uhp_params(uhp_param_file)
 
+  write(*,*) uztwm,uzfwm,uzk,pctim,adimp,riva,zperc, &
+  rexp,lztwm,lzfsm,lzfpm,lzsk,lzpk,pfree,&
+  side,rserv
+
   call get_sim_length(sim_length)
 
 !allocate variables now

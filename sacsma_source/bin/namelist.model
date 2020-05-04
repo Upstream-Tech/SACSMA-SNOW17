@@ -8,7 +8,7 @@ uhp_param_file = "./test_uhp_params.parm"
 gage_id = 06352000			!usgs gage id
 dt      = 86400				!model time step in seconds (86400 = 1 day)
 
-start_year    = 1980
+start_year    = 1981
 start_month   = 10		!starting month for calibration in observed streamflow data
 start_day     = 1		!starting day for calibration in observed streamflow data  (start_month, start_day used to find first date of occurance)
 

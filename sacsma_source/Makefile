@@ -10,7 +10,7 @@
 #========================================================================
 
 # Define core directory below which everything resides
-F_MASTER_DIR = /Users/grey/workspace/SACSMA-SNOW17/source
+F_MASTER_DIR = /Users/grey/workspace/SACSMA-SNOW17/sacsma_source
 
 # Location of the compiled modules
 MOD_PATH = $(F_MASTER_DIR)/driver
