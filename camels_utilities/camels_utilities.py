@@ -87,6 +87,11 @@ def load_forcings(gauge_id: str):
   assert len(forcing_files) == 1
   forcing_file = forcing_files[0]
 
+  # load area from header
+  with open(forcing_file, 'r') as fp:
+    content = fp.readlines()
+    area = int(content[2])
+
   # Grab the data
   forcings = pd.read_csv(forcing_file, sep='\s+', header=3)
 
@@ -95,7 +100,7 @@ def load_forcings(gauge_id: str):
       forcings['Year'] * 10000 + forcings['Mnth'] * 100 + forcings['Day'], format='%Y%m%d')
   forcings = forcings.set_index('Date')
 
-  return forcings
+  return forcings, area
 
 
 def load_discharge(gauge_id: str):
