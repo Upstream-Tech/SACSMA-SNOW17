@@ -1,29 +1,12 @@
-The directory structure is:
+This repository is for compiling legacy SAC-SMA fortran code with a Python linker (f2py3). There are three parts to the full build: sacsma, snow17, and duamel (unit hydrograph) - these can be compiled using teh following instructions. The 'sacsma_utilities' function shows how to use these builds. The 'test_sacsma' function allows you to run the builds using NCAR CAMELS data.
 
-bin/
-The makefile places executable here.  There are aosl example model parameter files, model output and bash shell wrapper scripts here
+1) Compile the Snow17 module.
+>> cd /Users/grey/workspace/SACSMA-SNOW17/sacsma_source/snow19
+>> f2py -c -m exsnow exsnow19.f PACK19.f   SNDEPTH.f  SNEW.f     SNOWPACK.f SNOWT.f    adjc19.f   aeco19.f   aesc19.f  melt19.f   rout19.f   updt19.f   zero19.f
 
-driver/
-The driver code and Makefile are here.
+2) Compile the SAC-SMA module.
+>> cd /Users/grey/workspace/SACSMA-SNOW17/sacsma_source/sac
+>> f2py -c -m exsac ex_sac1.f sac1.f
 
-namelist/ 
-This directory contains example namelist files.  The file namelist.model.example  Has comments for every line of the input file giving a brief description of what each variable is.
-
-sac/
-All the SAC model code is here
-
-share/
-Contains routines used by code to read input files, do other things.  Still needs some cleaning for unused code...
-
-snow19/
-Snow-17 code is here.  Directory is snow19 because it is an updated version of the original Snow-17, but its still called Snow-17.
-
-
-
-The model is run from the command line as:
-
-./lump_model.exe namelist.model
-
-The namelist.model can have any name you want, the code takes this as a command line argument and reads that file as the namelist.
-The namelist should contain all the information found in the example namelist for the model to run.  It'll run very quickly and generate output at the file specified by model_out in the namelist.
-
+3) Compile the unit hydrgraph router
+>> f2py -c sacsma.pyf sacsma.f 

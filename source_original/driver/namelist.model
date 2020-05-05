@@ -1,0 +1,68 @@
+&INIT_CONTROL
+init_smois    = 550.0, 500.0, 580.0, 500.0, 525.0, 500.0  !initial soil moisture state for sac-sma
+forcing_name  = "/d2/anewman/daymet_forcing/lump/10/006352000_lump_cida_forcing_leap.txt"		!GDP areal average forcing file name for gage being processed
+stream_name  = "/d2/anewman/usgs_streamflow/10/006352000_streamflow_1980_leap.txt"			!USGS streamflow file name for gage being processed
+model_out = "/home/anewman/bor_basin_calib/bin/006352000_model_output.txt"		!Model output file name for gage being processed.  Only used when opt = 0.
+opt_name = "/home/anewman/bor_basin_calib/bin/region_10_opt.txt"  								!File name for SCE optimal paramter sets.  Only used when opt = 0.
+gage_id = 006352000    !9 digit gage ID being run
+dt            = 86400  !model time step in seconds (86400 = 1 day)
+sim_length       = 5478   !simulation length in days for calibration period
+opt           = 1      !opt = 1 runs optimization code, opt = 0 sets code to run model for calibration/validation using optimal SCE parameter sets
+val_period    = 0      !flag to run validation or not.  MUST be 0 when opt = 1
+metric        = "rmse" !can be set to rmse, mse, nse, or kge
+pet_coef      = 1.4,1.26,1.74   !priestly-taylor coefficient for pet calculation (depends on aridity of region 1.26-1.34 for humid grass/forest then up to 1.74 for very dry areas).  This parameter is optimized by SCE
+start_month   = 10		!starting month for calibration in observed streamflow data
+start_day     = 1		!starting day for calibration in observed streamflow data  (start_month, start_day used to find first date of occurance)
+/
+
+&SNOW_17
+scf	=	1.865,	0.1,	5.0	!gauge undercatch correction factor (frozen precip only)
+mfmax	=	1.209,	0.8,	3.0	!maximum melt factor
+mfmin	= 	0.010,	0.01,	0.79	!minimum melt factor
+uadj	=	0.043,	0.01,	0.4	!wind adjustment for enhanced flux during rain on snow
+si	=	2454.8,	1.0	3500.0	!SWE for 100% SCA
+pxtemp	= 	1.144,	-1.0,	3.0	!temperature of rain/snow transition
+nmf	=	0.15,	0, 	0.3 	!not optimized, maximum negative melt factor
+tipm	=	0.05,	0.01,	1.0 	!not optimized, weight of previous timestep 
+mbase	=	0.0,	0.0,	0.3 	!not optimized, temp above which melt occurs
+plwhc	=	0.06,	0.0,	0.4 	!not optimized, liquid water holding capacity of snowpack
+daygm	=	0.03,	0.0,	0.01 	!not optimized, melt rate at base of snowpack
+adc	=	0.05,0.15,0.26,0.45,0.5,0.56,0.61,0.65,0.69,0.82,1.0   !not optimized  type bc (mountains)
+/
+
+&SAC_SMA
+uztwm	=  21.615,     1.0,   800.0	!upper zone tension water capacity
+uzfwm	=  757.617,     1.0,   800.0	!upper zone free water capacity
+lztwm	=  541.699,     1.0,   800.0	!lower zone tension water capacity
+lzfpm	=  549.209,     1.0,  1000.0	!lower zone primary free water capacity
+lzfsm   =  980.741,     1.0,  1000.0	!lower zone supplemental free water capacity
+adimp	=  0.0,     0.0,    0.40	!not optimized, additional impervious area
+uzk	=  0.698,     0.1,    0.70	!upper zone free water withdrawl rate
+lzpk	=  0.001, 0.00001,   0.025	!lower zone primary free water withdrawl rate
+lzsk	=  0.045,    0.001,    0.25	!lower zone supplemental free water withdrawl rate
+zperc	=  74.264,     1.0,   250.0	!maximum percolation rate coefficient
+rexp	=  2.495,     0.0,     6.0	!percolation equation exponent
+pctim	=  0.005,     0.0,     0.6	!not optimized, minimum impervious area
+pfree	=  0.388,     0.0,     1.0	!fraction of percolated water going directly to lower zone free water storage
+riva	=   0.0		 !not optimized, riparian vegetation
+side	=   0.0		 !not optimized, ratio of deep water recharge to channel base flow
+rserv	=   0.3		 !not optimized, fraction of lower zone free water not transferable to lower zone tension water storage
+unit_shape 	= 1.527,	1.0,	5.0       !gamma distribution shape parameter
+unit_scale 	= 2.000,	0.001,	150.0      !scale parameter. limit of 1-200 for a model timestep of 24 hours (need dt/max(unit_scale) > ~0.12)
+/
+
+&SCE
+nopt   	=  20             	 	! number of parameters to be optimized
+maxn   	=  150000         	 	! maximum number of trials before optimization is terminated
+kstop  	=  9              	 	! number of shuffling loops the value must change by PCENTO (MAX=9)
+pcento 	=  0.001          	 	! the percentage
+ngs    	=  48             	 	! number of complexes in the initial population
+npg    	=  41	        	 	! number of points in each complex (=2*NOPT + 1)
+nps    	=  21            	 	! number of points in a sub-complex (=NOPT + 1)
+nspl   	=  41            	 	! number of evolution steps allowed for each complex before shuffling (=2*NOPT + 1)
+mings  	=  12            	 	! minimum number of complexes required (=NGS)
+iniflg 	=  0             	 	! 1 = include initial point in the population
+iprint 	=  1             	 	! 0 = supress printing
+iseed   =  27             		!starting seed for random number generator
+sce_fname = "/home/anewman/bor_basin_calib/bin/sceua_output.txt"
+/
