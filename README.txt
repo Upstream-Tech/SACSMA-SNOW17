@@ -9,6 +9,4 @@ This repository is for compiling legacy SAC-SMA fortran code with a Python linke
 >> f2py -c -m exsac ex_sac1.f sac1.f
 
 3) Compile the unit hydrgraph router
->> f2py -c sacsma.pyf sacsma.f
-~                                                                                                                             
-~                              
+>> f2py -c -m duamel duamel.pyf duamel.f
