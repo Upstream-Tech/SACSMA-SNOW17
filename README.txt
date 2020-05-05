@@ -1,4 +1,4 @@
-This repository is for compiling legacy SAC-SMA fortran code with a Python linker (f2py3). There are three parts to the full build: sacsma, snow17, and duamel (unit hydrograph) - these can be compiled using teh following instructions. The 'sacsma_utilities' function shows how to use these builds. The 'test_sacsma' function allows you to run the builds using NCAR CAMELS data.
+This repository is for compiling legacy SAC-SMA fortran code into a Python interface (f2py3). There are three parts to the full build: sacsma, snow17, and duamel (unit hydrograph) - these can be compiled using teh following instructions. The 'sacsma_utilities' function shows how to use these builds. The 'test_sacsma' function allows you to run the builds using NCAR CAMELS data.
 
 1) Compile the Snow17 module.
 >> cd /Users/grey/workspace/SACSMA-SNOW17/sacsma_source/snow19
