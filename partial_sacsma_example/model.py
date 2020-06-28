@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from potential_evap import get_priestley_taylor_pet
-import sacsma
+from sacsma_utilities import run_sacsma
 
 
 class model(object):

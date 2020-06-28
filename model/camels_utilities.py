@@ -7,10 +7,10 @@ DATA_DIR = '/Users/grey/workspace/camels_data/'
 FORCING_TYPE = 'nldas'
 
 
-def load_all_sacsma_parameters(gauge_id: str, forcing_type: str):
+def load_all_sacsma_parameters(forcing_type: str):
 
   # Construct file name from pieces
-  filenames = glob.glob(f'{DATA_DIR}/model_output/{forcing_type}/**/{gauge_id}_*_model_parameters.txt')
+  filenames = glob.glob(f'{DATA_DIR}/model_output/{forcing_type}/**/*_model_parameters.txt')
 
   # loop through all files
   for i, filename in enumerate(filenames):
@@ -20,7 +20,7 @@ def load_all_sacsma_parameters(gauge_id: str, forcing_type: str):
     with open(filename) as f:
       for line in f:
         key, val = line.split()
-        parameters[key] = val
+        parameters[key] = float(val)
 
     # Convert to pandas series
     if not('parameters_df' in locals()):
@@ -118,7 +118,7 @@ def load_discharge(gauge_id: str):
   return output
 
 
-def load_usgs(gauge_id: str):
+def load_usgs(gauge_id: str, area: int):
 
   # Grab the correct forcing file
   filename = glob.glob(f'{DATA_DIR}/basin_dataset_public_v1p2/usgs_streamflow/**/{gauge_id}_streamflow_qc.txt')[0]
@@ -126,6 +126,9 @@ def load_usgs(gauge_id: str):
   # Grab the data
   col_names = ['basin', 'Year', 'Mnth', 'Day', 'QObs', 'flag']
   obs = pd.read_csv(filename, sep='\s+', header=None, names=col_names)
+
+  # unit conversion cfs --> mm/day
+  obs.QObs = 28316846.592 * obs.QObs * 86400 / (area * 10 ** 6)
 
   # Datetime index
   obs['Date'] = pd.to_datetime(obs.Year.map(str) + "/" + obs.Mnth.map(str) + "/" + obs.Day.map(str))

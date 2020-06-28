@@ -6,7 +6,23 @@ STEFAN_BOLTZMAN = 4.903e-09
 PI = np.pi
 
 
-def get_priestley_taylor_pet(t_min: np.ndarray, t_max: np.ndarray, s_rad: np.ndarray, lat: float, elev: float,
+# Routine plucked directly from NCAR Fortran code
+# I don't know what any of these constants are
+def calc_surface_pressure(elev):
+  # constants
+  sfc_pres_a = 33.86
+  sfc_pres_b = 29.9
+  sfc_pres_c = 0.335
+  sfc_pres_d = 0.00022
+  sfc_pres_e = 2.4
+
+  # sfc pres in hPa
+  sfc_pres = sfc_pres_a * (sfc_pres_b - (sfc_pres_c * (elev / 100)) + (sfc_pres_d * ((elev / 100) ** sfc_pres_e)))
+
+  return sfc_pres
+
+
+def priestley_taylor_pet(t_min: np.ndarray, t_max: np.ndarray, s_rad: np.ndarray, lat: float, elev: float,
                              doy: np.ndarray) -> np.ndarray:
   """Calculate PET as an approximation following the Priestley-Taylor equation.
 
