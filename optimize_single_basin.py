@@ -7,7 +7,7 @@ import model.camels_utilities as camels
 from optimizer.optimizer import spotpy_setup
 
 # function to run a single basin
-def run_single_basin(basin, train_dates, algorithm, max_model_runs, dds_trials, out_dir_run):
+def run_single_basin(basin, forcing_type, train_dates, algorithm, max_model_runs, dds_trials, out_dir_run):
 
     # training dates for this basin
     sd = train_dates['start_dates'][basin]
@@ -17,7 +17,7 @@ def run_single_basin(basin, train_dates, algorithm, max_model_runs, dds_trials, 
     # load data
     mask_dates = obj_fun_dates['train_dates']
     attributes = camels.load_basin_attributes(basin)
-    forcings, area = camels.load_forcings(basin)
+    forcings, area = camels.load_forcings(basin, forcing_type)
     observations = camels.load_usgs(basin, area)
 
     # set up optimizer

@@ -1,8 +1,12 @@
-*.pkl
-**/*.pkl
 results
-*.csv
-venv/*
 test
 job_scripts
+log_files
+
+**/**/*.pyc
+**/*.pyc
+*.pyc
+*.swp
+**/*.swp
+**/**/*.swp
 
