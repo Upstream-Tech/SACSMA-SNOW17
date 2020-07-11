@@ -11,9 +11,12 @@ class spotpy_setup(object):
                  observations: pd.Series,
                  latitude: float,
                  elevation: float,
-                 warmup: int = 365 * 2):
+                 algorithm_minimize: bool,
+                 mask_dates: pd.Series):
 
-        self.observations = observations.values[warmup:]
+        self.mask_dates = mask_dates
+        self.observations = observations
+        self.algorithm_minimize = algorithm_minimize
 
         # Parameter bounds
         forcing_types = ['nldas', 'daymet', 'maurer']
@@ -42,8 +45,7 @@ class spotpy_setup(object):
         self.model = model(forcings=forcings,
                            latitude=latitude,
                            elevation=elevation,
-                           default_parameters=parameter_df['all_mean'],
-                           warmup=warmup)
+                           default_parameters=parameter_df['all_mean'])
 
     def parameters(self):
         parameters = spotpy.parameter.generate(self.params)
@@ -55,10 +57,14 @@ class spotpy_setup(object):
 
     def evaluation(self, evaldates=False):
         if evaldates:
-            return self.model.eval_dates
+            raise SystemExit('Evaluation dates moved to optimizer.')
         else:
             return self.observations
 
     def objectivefunction(self, simulation, evaluation):
-        objectivefunction = spotpy.objectivefunctions.rmse(evaluation, simulation)
+        obs = evaluation[self.mask_dates].values
+        sim = simulation[self.mask_dates].values 
+        objectivefunction = spotpy.objectivefunctions.rmse(obs, sim)
+        if not self.algorithm_minimize:
+          objectivefunction = -objectivefunction
         return objectivefunction

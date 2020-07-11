@@ -3,4 +3,6 @@
 results
 *.csv
 venv/*
+test
+job_scripts
 

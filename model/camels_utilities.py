@@ -3,7 +3,7 @@ from pathlib import Path
 import pandas as pd
 
 # Hard-code paths
-DATA_DIR = '/Users/grey/workspace/camels_data/'
+DATA_DIR = '/home/gsnearing/projects/camels_data'
 FORCING_TYPE = 'nldas'
 
 

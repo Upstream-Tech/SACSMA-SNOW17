@@ -1,9 +1,9 @@
 import pandas as pd
 import numpy as np
 from model.potential_evap import priestley_taylor_pet, calc_surface_pressure
+import sacsma_source.snow19.exsnow as snow17
 import sacsma_source.sac.ex_sac1 as sacsma
 import sacsma_source.sac.duamel as unit_hydrograph
-import sacsma_source.snow19.exsnow as snow17
 
 
 class model(object):
@@ -12,21 +12,16 @@ class model(object):
                  forcings: pd.DataFrame,
                  latitude: float,
                  elevation: float,
-                 default_parameters: pd.DataFrame,
-                 warmup: int):
+                 default_parameters: pd.DataFrame):
 
         self.default_parameters = default_parameters
         self.latitude = latitude.astype(float)
         self.elevation = elevation.astype(float)
-        self.warmup = warmup
 
         # Timestep in different units
         self.dt_seconds = int((forcings.index[1] - forcings.index[0]).total_seconds())
         self.dt_days = self.dt_seconds / 86400
         self.dt_hours = self.dt_seconds / (60 * 60)
-
-        # test period
-        self.eval_dates = forcings.index.values[warmup:]
 
         # Keys for parameters, states, fluxes
         self.sacsma_parameter_keys = [
@@ -46,6 +41,7 @@ class model(object):
         ]
 
         # Extract vectors as numpy arrays for speed
+        self.dates = forcings.index
         self.precipitation = forcings['PRCP(mm/day)'].values
         self.temperature = 0.5 * (forcings['Tmax(C)'].values + forcings['Tmin(C)'].values)
         self.day = forcings['Day'].values
@@ -115,33 +111,11 @@ class model(object):
                                                  m_unit_hydro,
                                                  1, 0)
 
-        return hydrograph_qq[self.warmup:-m_unit_hydro]
+        # create output series
+        simulated_hydrograph_series = pd.Series(hydrograph_qq[:-m_unit_hydro], index=self.dates)
+
+        return simulated_hydrograph_series 
 
 
 
 
-
-
-        # # Set constant snow17 parameter
-        # adc = np.array([0.05, 0.15, 0.26, 0.45, 0.5, 0.56, 0.61, 0.65, 0.69, 0.82, 1.0]).astype('f4')
-
-# # Parameter data type
-    # mfmax = np.array(mfmax).astype(float)
-    # mfmin = np.array(mfmin).astype(float)
-    # uadj = np.array(uadj).astype(float)
-    # si = np.array(si).astype(float)
-    # scf = np.array(scf).astype(float)
-    # pxtemp = np.array(pxtemp).astype(float)
-      # uztwm = np.array(uztwm).astype(float)
-      # uzfwm = np.array(uzfwm).astype(float)
-      # lztwm = np.array(lztwm).astype(float)
-      # lzfpm = np.array(lzfpm).astype(float)
-      # lzfsm = np.array(lzfsm).astype(float)
-      # uzk   = np.array(uzk).astype(float)
-      # lzpk  = np.array(lzpk).astype(float)
-      # lzsk  = np.array(lzsk).astype(float)
-      # zperc = np.array(zperc).astype(float)
-      # rexp  = np.array(rexp).astype(float)
-      # pfree = np.array(pfree).astype(float)
-      # ushape = np.array(ushape).astype(float)
-      # uscale = np.array(uscale).astype(float)

@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from potential_evap import priestley_taylor_pet
+from model.potential_evap import priestley_taylor_pet
 import sacsma_source.sac.ex_sac1 as sacsma
 import sacsma_source.sac.duamel as unit_hydrograph
 import sacsma_source.snow19.exsnow as snow17
