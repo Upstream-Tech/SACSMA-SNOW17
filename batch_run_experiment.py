@@ -42,13 +42,13 @@ os.mkdir(out_dir_run)
 num_cores = multiprocessing.cpu_count()
 use_n_cores = int(num_cores*args.use_cores_frac)
 print(f'Using {use_n_cores} cores of {num_cores} total.')
-#Parallel(n_jobs=use_n_cores)(delayed(run_basin)(basin, 
-#                                                train_dates,
-#                                                args.algorithm,
-#                                                args.max_model_runs,
-#                                                args.dds_trials,
-#                                                out_dir_run) 
-#                             for basin in basins)
-run_basin(basins[0], train_dates, args.algorithm, args.max_model_runs, args.dds_trials, out_dir_run)
+Parallel(n_jobs=use_n_cores)(delayed(run_basin)(basin, 
+                                                train_dates,
+                                                args.algorithm,
+                                                args.max_model_runs,
+                                                args.dds_trials,
+                                                out_dir_run) 
+                             for basin in basins)
+#run_basin(basins[0], train_dates, args.algorithm, args.max_model_runs, args.dds_trials, out_dir_run)
 
 
