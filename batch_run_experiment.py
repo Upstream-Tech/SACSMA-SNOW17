@@ -24,6 +24,10 @@ with Path(args.config_file).open('r') as fp:
     yaml = YAML(typ="safe")
     yaml.allow_duplicate_keys = True
     cfg = yaml.load(fp)  
+# extract forcing type
+#assert(len(cfg['forcings']))==1
+forcing_type = cfg['forcings'][0]
+print('Using forcings of type: ', forcing_type)
 
 # extract training dates
 with open(cfg['train_dates_file'], 'rb') as f:
@@ -42,13 +46,19 @@ os.mkdir(out_dir_run)
 num_cores = multiprocessing.cpu_count()
 use_n_cores = int(num_cores*args.use_cores_frac)
 print(f'Using {use_n_cores} cores of {num_cores} total.')
-Parallel(n_jobs=use_n_cores)(delayed(run_basin)(basin, 
+Parallel(n_jobs=use_n_cores)(delayed(run_basin)(basin,
+                                                forcing_type,
                                                 train_dates,
                                                 args.algorithm,
                                                 args.max_model_runs,
                                                 args.dds_trials,
-                                                out_dir_run) 
+                                                out_dir_run)
                              for basin in basins)
-#run_basin(basins[0], train_dates, args.algorithm, args.max_model_runs, args.dds_trials, out_dir_run)
-
+#run_basin(basin=basins[0], 
+#          forcing_type=forcing_type, 
+#          train_dates=train_dates, 
+#          algorithm=args.algorithm, 
+#          max_model_runs=args.max_model_runs, 
+#          dds_trials=args.dds_trials, 
+#          out_dir_run=out_dir_run)
 

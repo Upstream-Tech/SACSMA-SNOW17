@@ -4,7 +4,7 @@
 #SBATCH --ntasks=40                                   # Number of CPUs
 #SBATCH --time=168:00:00                              # Time limit hrs:min:sec
 #SBATCH --output=log_files/dummy_slurm.log            # Standard output and error log
-#SBATCH --exclude=gpu01                               # Don't hog the GPU node
+#SBATCH --exclude=gpu01,node06,node05                 # Don't hog the GPU node
 
 
 # memory

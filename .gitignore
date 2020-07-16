@@ -5,4 +5,8 @@ results
 venv/*
 test
 job_scripts
+log_files
+__pycache__
+**/__pycache__ 
+.ipynb_checkpoints
 

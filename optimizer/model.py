@@ -42,14 +42,16 @@ class model(object):
 
         # Extract vectors as numpy arrays for speed
         self.dates = forcings.index
-        self.precipitation = forcings['PRCP(mm/day)'].values
-        self.temperature = 0.5 * (forcings['Tmax(C)'].values + forcings['Tmin(C)'].values)
-        self.day = forcings['Day'].values
-        self.month = forcings['Mnth'].values
-        self.year = forcings['Year'].values
+        forcings.columns = [x.lower() for x in forcings.columns]
+        self.precipitation = forcings['prcp(mm/day)'].values
+        self.temperature = 0.5 * (forcings['tmax(c)'].values + forcings['tmin(c)'].values)
+            
+        self.day = forcings['day'].values
+        self.month = forcings['mnth'].values
+        self.year = forcings['year'].values
 
         # Calculate potential evaporation as numpy array
-        self.pet = priestley_taylor_pet(forcings['Tmin(C)'], forcings['Tmax(C)'], forcings['SRAD(W/m2)'],
+        self.pet = priestley_taylor_pet(forcings['tmin(c)'], forcings['tmax(c)'], forcings['srad(w/m2)'],
                                    self.latitude, self.elevation,
                                    forcings.index.to_series().dt.dayofyear)
 

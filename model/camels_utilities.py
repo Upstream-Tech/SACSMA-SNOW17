@@ -4,8 +4,6 @@ import pandas as pd
 
 # Hard-code paths
 DATA_DIR = '/home/gsnearing/projects/camels_data'
-FORCING_TYPE = 'nldas'
-
 
 def load_all_sacsma_parameters(forcing_type: str):
 
@@ -30,10 +28,10 @@ def load_all_sacsma_parameters(forcing_type: str):
   return parameters_df
 
 
-def load_sacsma_parameters(gauge_id: str):
+def load_sacsma_parameters(gauge_id: str, forcing_type: str):
 
   # Construct file name from pieces
-  filename = glob.glob(f'{DATA_DIR}/model_output/{FORCING_TYPE}/**/{gauge_id}_*_model_parameters.txt')[0]
+  filename = glob.glob(f'{DATA_DIR}/model_output/{forcing_type}/**/{gauge_id}_*_model_parameters.txt')[0]
 
   # Load a dictionary of parameter values
   parameters = {}
@@ -79,12 +77,15 @@ def load_basin_attributes(gauge_id: str):
   return attributes
 
 
-def load_forcings(gauge_id: str):
+def load_forcings(gauge_id: str, forcing_type: str):
 
   # Grab the correct forcing file
   forcing_files = glob.glob(
-      f'{DATA_DIR}/basin_dataset_public_v1p2/basin_mean_forcing/{FORCING_TYPE}/**/{gauge_id}_*_forcing_leap.txt')
-  assert len(forcing_files) == 1
+      f'{DATA_DIR}/basin_dataset_public_v1p2/basin_mean_forcing/{forcing_type}/**/{gauge_id}_*_forcing_leap.txt')
+  try:
+    assert len(forcing_files) == 1
+  except:
+    import pdb; pdb.set_trace()
   forcing_file = forcing_files[0]
 
   # load area from header
@@ -103,10 +104,10 @@ def load_forcings(gauge_id: str):
   return forcings, area
 
 
-def load_discharge(gauge_id: str):
+def load_discharge(gauge_id: str, forcing_type: str):
 
   # Grab the correct forcing file
-  filename = glob.glob(f'{DATA_DIR}/model_output/{FORCING_TYPE}/**/{gauge_id}_*_model_output.txt')[0]
+  filename = glob.glob(f'{DATA_DIR}/model_output/{forcing_type}/**/{gauge_id}_*_model_output.txt')[0]
 
   # Grab the data
   output = pd.read_csv(filename, sep='\s+')
