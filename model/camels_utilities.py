@@ -82,7 +82,10 @@ def load_forcings(gauge_id: str, forcing_type: str):
   # Grab the correct forcing file
   forcing_files = glob.glob(
       f'{DATA_DIR}/basin_dataset_public_v1p2/basin_mean_forcing/{forcing_type}/**/{gauge_id}_*_forcing_leap.txt')
-  assert len(forcing_files) == 1
+  try:
+    assert len(forcing_files) == 1
+  except:
+    import pdb; pdb.set_trace()
   forcing_file = forcing_files[0]
 
   # load area from header
