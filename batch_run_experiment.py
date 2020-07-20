@@ -1,5 +1,6 @@
 import argparse
 from pathlib import Path
+import pandas as pd
 from ruamel.yaml import YAML
 import pickle as pkl
 import os
@@ -17,6 +18,7 @@ parser.add_argument('--dds_trials', type=int, default=1)
 parser.add_argument('--out_dir', type=str, default='results')
 parser.add_argument('--use_cores_frac', type=float, default=1)
 parser.add_argument('--algorithm', type=str, default='DDS')
+#parser.add_argument('--forcing_type', type=str, required=True)
 args = parser.parse_args()
 
 # read config file
@@ -25,12 +27,18 @@ with Path(args.config_file).open('r') as fp:
     yaml.allow_duplicate_keys = True
     cfg = yaml.load(fp)  
 
+# extract forcing type
+assert(len(cfg['forcings']))==1
+forcing_type = cfg['forcings'][0]
+print('Using forcings of type: ', forcing_type)
+
 # extract training dates
-with open(cfg['train_dates_file'], 'rb') as f:
-    train_dates = pkl.load(f)
+train_dates = pd.date_range(cfg['train_start_date'], cfg['train_end_date'])
 
 # list all basins in this experiment    
-basins = list(train_dates['start_dates'].keys())
+with open(cfg['train_basin_file'], 'r') as f:
+    basins = f.readlines()
+basins = [basin.strip() for basin in basins]
 assert len(basins) == 531
 
 # create output directory
@@ -42,21 +50,21 @@ os.mkdir(out_dir_run)
 num_cores = multiprocessing.cpu_count()
 use_n_cores = int(num_cores*args.use_cores_frac)
 print(f'Using {use_n_cores} cores of {num_cores} total.')
-#Parallel(n_jobs=use_n_cores)(delayed(run_basin)(basin, 
-#                                                args.forcing_type,
-#                                                train_dates,
-#                                                args.algorithm,
-#                                                args.max_model_runs,
-#                                                args.dds_trials,
-#                                                out_dir_run) 
-#                             for basin in basins)
-run_basin(basin=basins[0], 
-          forcing_type=args.forcing_type, 
-          train_dates=train_dates, 
-          algorithm=args.algorithm, 
-          max_model_runs=args.max_model_runs, 
-          dds_trials=args.dds_trials, 
-          out_dir_run=out_dir_run)
+Parallel(n_jobs=use_n_cores)(delayed(run_basin)(basin, 
+                                                forcing_type,
+                                                train_dates,
+                                                args.algorithm,
+                                                args.max_model_runs,
+                                                args.dds_trials,
+                                                out_dir_run) 
+                             for basin in basins)
+#run_basin(basin=basins[0], 
+#          forcing_type=forcing_type, 
+#          train_dates=train_dates, 
+#          algorithm=args.algorithm, 
+#          max_model_runs=args.max_model_runs, 
+#          dds_trials=args.dds_trials, 
+#          out_dir_run=out_dir_run)
 
 
 

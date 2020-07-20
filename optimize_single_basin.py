@@ -9,10 +9,7 @@ from optimizer.optimizer import spotpy_setup
 # function to run a single basin
 def run_single_basin(basin, forcing_type, train_dates, algorithm, max_model_runs, dds_trials, out_dir_run):
 
-    # training dates for this basin
-    sd = train_dates['start_dates'][basin]
-    ed = train_dates['end_dates'][basin]
-    obj_fun_dates = pd.DataFrame(list(chain.from_iterable(pd.date_range(sdi, edi) for sdi, edi in zip(sd, ed))), columns = ('train_dates',))
+    obj_fun_dates = pd.DataFrame(train_dates, columns=['train_dates'])
 
     # load data
     mask_dates = obj_fun_dates['train_dates']
@@ -51,7 +48,7 @@ def run_single_basin(basin, forcing_type, train_dates, algorithm, max_model_runs
 
     # get best parameters
     results = sampler.getdata()
-    best_parameters = spotpy.analyser.get_best_parameterset(results,maximize=False)
+    best_parameters = spotpy.analyser.get_best_parameterset(results,maximize=(not algorithm_minimize))
     best_parameters_df = pd.DataFrame(best_parameters)
     for key in best_parameters_df.keys():
         new_key = key.split('par')[-1]

@@ -9,4 +9,6 @@ log_files
 *.swp
 **/*.swp
 **/**/*.swp
+.ipynb_checkpoints
+data
 
