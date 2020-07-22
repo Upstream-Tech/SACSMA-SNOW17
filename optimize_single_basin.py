@@ -51,7 +51,7 @@ def run_single_basin(basin, forcing_type, train_dates, algorithm, max_model_runs
 
     # get best parameters
     results = sampler.getdata()
-    best_parameters = spotpy.analyser.get_best_parameterset(results,maximize=False)
+    best_parameters = spotpy.analyser.get_best_parameterset(results,maximize=(not algorithm_minimize))
     best_parameters_df = pd.DataFrame(best_parameters)
     for key in best_parameters_df.keys():
         new_key = key.split('par')[-1]

@@ -19,4 +19,4 @@ source /home/gsnearing/.bashrc
 conda activate sacsma
 
 # run code
-python batch_run_experiment.py --config_file=${1} --max_model_runs=${2} --algorithm=${3}
+python batch_run_experiment.py --config_file=${1} --max_model_runs=${2} --algorithm=${3} 
